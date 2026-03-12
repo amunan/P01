@@ -1,0 +1,50 @@
+---
+description: Tauri 桌面应用架构规范
+globs: "src-tauri/**"
+alwaysApply: false
+---
+
+# Tauri 规则
+
+## 架构分层
+
+```
+前端 (React/TS)  ←→  Tauri IPC  ←→  Rust Core Engine  ←→  Inference Layer
+     UI 渲染            command/event      状态 + 逻辑          AI 推理
+```
+
+- 前端只做 UI 渲染和用户交互，不持有游戏状态
+- 游戏状态、规则校验、Prompt 组装全部在 Rust 侧
+- 推理层通过 trait 抽象，Rust Core 不直接依赖具体推理实现
+
+## Tauri Command 设计
+
+- 每个 command 对应一个明确的游戏操作，命名用 `snake_case` 动词开头
+- 输入/输出用 `serde` 可序列化的 struct，不用裸 `String` / `serde_json::Value`
+- 错误统一返回 `Result<T, CommandError>`，`CommandError` 带 `code` + `message`
+- 耗时操作（推理、存档 IO）必须 `async`，不阻塞 UI
+
+```rust
+#[tauri::command]
+async fn submit_player_action(
+    state: State<'_, GameState>,
+    action: PlayerAction,
+) -> Result<TurnResponse, CommandError> { ... }
+```
+
+## Tauri Event（流式输出）
+
+- AI 推理的流式 token 通过 Tauri event 推送，前端订阅渲染
+- Event 命名格式：`game:{event_name}`，如 `game:beat_stream`、`game:turn_complete`
+- Event payload 必须是可序列化的 struct
+
+## 资源管理
+
+- Story Package 开发态为明文目录，发布态打包加密
+- Prompt 模板由 Rust 侧加载组装，不暴露给前端
+- 加密密钥不在前端代码中出现
+
+## 窗口与进程
+
+- 主窗口负责游戏 UI
+- 长时间推理不阻塞 UI，通过 async command + event 实现非阻塞

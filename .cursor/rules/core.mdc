@@ -5,26 +5,62 @@ alwaysApply: true
 
 # 核心通用规则
 
+## 项目概况
+
+AI 驱动的文本冒险游戏。技术栈：
+
+- **前端**：React + TypeScript（Tauri WebView）
+- **核心引擎**：Rust（状态机、存档、记忆、Prompt 组装、AI 输出校验）
+- **桌面壳**：Tauri（Rust-JS IPC）
+- **AI 推理**：本地优先（llama.cpp / Ollama），云端可切换（OpenAI 兼容 API）
+- **原型阶段**：纯 Web/TS 实现核心循环，Mock + ExternalLocal + Cloud 后端
+
 ## 回复规范
 
 - 始终使用简体中文回复
-- 直接回答问题，不包含寒暄、客套、过渡语等无用内容
-- 回复精炼，优先给出可操作的结论
+- 直接给出可操作的结论，不包含寒暄、客套、过渡语
+- 涉及技术选型时说明权衡理由
 
 ## 代码风格
 
-- 命名清晰简洁，变量/函数名能自解释意图
-- 错误处理一致：不吞错误，不忽略返回值
-- 避免无意义的注释，注释只解释"为什么"而非"做了什么"
+- 命名清晰自解释，不缩写（除业界通用缩写：ctx、err、cfg 等）
+- 错误处理一致：Rust 用 `Result` + `thiserror`，TS 用 typed error
+- 注释只解释"为什么"，不复述代码逻辑
 
 ## Git 规范
 
-- 提交信息使用 Conventional Commits 格式：`type(scope): description`
-- 常用 type：feat / fix / refactor / docs / chore / test
-- 不提交 `.env`、密钥、凭证等敏感文件
+提交信息**必须**使用 Conventional Commits 格式，**英文**书写：
+
+```
+type(scope): short description
+
+optional body
+```
+
+- type：`feat` / `fix` / `refactor` / `docs` / `chore` / `test` / `perf` / `ci`
+- scope：模块名如 `engine` / `frontend` / `inference` / `save` / `story-pkg` / `tauri`
+- description：祈使句，首字母小写，不加句号，50 字符以内
+- 不提交 `.env`、密钥、模型权重等敏感/大文件
+
+示例：
+
+```
+feat(engine): add memory decay sliding window
+fix(inference): handle timeout in cloud backend fallback
+docs(story-pkg): define character voice schema
+```
 
 ## 项目结构
 
-- 前后端代码目录分离
-- 配置文件集中管理，通过环境变量区分环境
-- 依赖版本锁定，使用 lock 文件
+- `src-tauri/` — Rust 核心引擎 + Tauri 壳
+- `src/` — React 前端
+- `story-packages/` — 故事内容包（纯数据）
+- `docs/` — 设计文档与技术规范
+- 依赖版本锁定，使用 lock 文件（Cargo.lock / pnpm-lock.yaml）
+
+## Rules & Skills
+
+新增或修改 rule / skill 前，阅读 `.cursor/CONVENTIONS.md` 中的命名规范、格式模板和检查清单。
+
+- Rules：`core` · `rust` · `tauri` · `react` · `inference`
+- Skills：`game-systems` · `narrative-design` · `visual-design` · `rust-engine` · `tauri-ai`

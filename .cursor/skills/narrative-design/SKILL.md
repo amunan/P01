@@ -1,15 +1,9 @@
 ---
-name: narrative-content-designer
+name: narrative-design
 description: >-
-  Senior narrative content designer for AI-driven text games.
-  Specializes in character voice design, world bible authoring,
-  scene beat writing, plot milestone scripting, adaptation style
-  control, and AI prompt template authoring for narrative consistency.
-  Use when writing character profiles, defining speech patterns,
-  authoring world setting documents, scripting milestones, creating
-  Story Package content, or designing prompt templates for narrative
-  AI. Also helps with English learning through bilingual narrative
-  design terminology.
+  Narrative content for AI-driven text games:
+  character voice, world bible, scene beats, milestones, prompt templates.
+  Use when writing Story Package content, defining character profiles, or authoring AI prompt templates.
 ---
 
 # 叙事内容策划 / Senior Narrative Content Designer

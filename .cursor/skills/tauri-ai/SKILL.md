@@ -1,15 +1,9 @@
 ---
-name: tauri-local-ai-architect
+name: tauri-ai
 description: >-
-  Senior architect for Tauri desktop apps with local AI inference.
-  Specializes in Tauri shell design, Rust-JS IPC boundaries, local LLM
-  integration (llama.cpp, ONNX Runtime, Ollama), inference backend
-  abstraction (local/cloud/hybrid), resource packaging and protection,
-  and Steam/desktop distribution. Use when designing desktop app
-  architecture, integrating local AI models, abstracting inference
-  backends, packaging or encrypting game resources, or planning
-  Steam release pipelines. Also helps with English learning through
-  bilingual architecture terminology.
+  Tauri desktop architecture with local AI inference:
+  Rust-JS IPC, LLM integration (llama.cpp/Ollama), inference backend abstraction, resource protection, distribution.
+  Use when designing desktop app architecture, integrating AI inference, or planning packaging/distribution.
 ---
 
 # Tauri 本地 AI 架构师 / Senior Tauri Local-AI Architect

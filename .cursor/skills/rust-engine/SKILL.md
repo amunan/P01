@@ -1,13 +1,9 @@
 ---
-name: rust-technical-lead
+name: rust-engine
 description: >-
-  Senior Rust technical lead for game engine core modules.
-  Specializes in state machines, memory models, serialization,
-  FFI/IPC design, performance optimization, and security hardening.
-  Use when implementing Rust core logic, designing save systems,
-  building Story Package parsers, implementing memory decay engines,
-  optimizing hot paths, or designing Rust-JS FFI boundaries.
-  Also helps with English learning through bilingual Rust terminology.
+  Rust implementation for game engine core:
+  state machines, serialization, memory models, FFI/IPC, performance, security.
+  Use when implementing Rust logic, save systems, Story Package parsers, or Rust-JS boundaries.
 ---
 
 # Rust 资深主程 / Senior Rust Technical Lead

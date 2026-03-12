@@ -1,0 +1,45 @@
+---
+description: React 前端开发规范（Tauri WebView）
+globs: "src/**/*.tsx,src/**/*.ts,src/**/*.jsx"
+alwaysApply: false
+---
+
+# React 前端规则
+
+## 职责边界
+
+前端只做 UI 渲染和用户交互：
+
+- 游戏状态由 Rust Core 持有，前端通过 Tauri command 获取
+- 前端不直接持有 Prompt、不调用 AI API、不做规则校验
+- 前端订阅 Tauri event 接收流式推理结果并渲染
+
+## 组件规范
+
+- 函数式组件 + Hooks，不使用 class 组件
+- 文件名 PascalCase（`UserProfile.tsx`），每文件单组件
+- 样式就近放置，优先 CSS Modules 或 Tailwind
+
+## TypeScript
+
+- strict 模式，禁止 `any`，用 `unknown` + 类型守卫
+- Props 用 `interface` 定义并导出
+- Tauri command 的请求/响应类型与 Rust 侧保持一致
+
+## 状态管理
+
+- 局部状态：`useState` / `useReducer`
+- 跨组件共享：Zustand
+- 从 Rust 获取的游戏状态不在前端二次缓存，避免不一致
+
+## Tauri 交互
+
+- 调用 Rust 用 `@tauri-apps/api` 的 `invoke()` 和 `listen()`
+- 封装统一的 `useGameCommand` / `useGameEvent` hooks
+- 所有 invoke 调用处理 loading / error / success 三态
+
+## 性能
+
+- 列表渲染提供稳定 `key`
+- 文本流式渲染避免逐字符触发全组件 re-render
+- `useMemo` / `useCallback` 仅在有明确性能问题时使用

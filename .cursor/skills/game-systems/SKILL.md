@@ -1,14 +1,9 @@
 ---
-name: game-systems-designer
+name: game-systems
 description: >-
-  Senior game systems designer specializing in rule systems, economy
-  design, and mechanical balance for AI-driven text games. Covers
-  memory decay mechanics, save point economy, pacing control,
-  plot guardrail design, replayability systems, and player agency
-  balancing. Use when designing game mechanics, balancing systems,
-  defining memory/save rules, tuning pacing parameters, or creating
-  intervention point logic. Also helps with English learning through
-  bilingual systems design terminology.
+  Game mechanics & system balance for AI-driven text games:
+  memory decay, save economy, pacing control, plot guardrails, replayability.
+  Use when designing/balancing game systems, tuning parameters, or defining intervention logic.
 ---
 
 # 资深系统策划 / Senior Game Systems Designer

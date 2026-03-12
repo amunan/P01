@@ -1,12 +1,9 @@
 ---
-name: text-game-artist
+name: visual-design
 description: >-
-  Senior art director for text-based games. Specializes in interaction design,
-  typography, visual style definition, and distinctive UI with personality.
-  Use when designing text game UI, choosing color schemes, defining visual styles,
-  creating text presentation effects (typewriter, glitch, handwriting), or planning
-  art asset specifications. Also helps with English learning through bilingual
-  design terminology.
+  Visual & interaction design for text games:
+  typography, color, text effects, UI style, asset specs.
+  Use when designing game UI, visual style, or text presentation effects.
 ---
 
 # 资深主美 / Senior Text Game Art Director

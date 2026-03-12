@@ -1,0 +1,55 @@
+---
+description: Rust 核心引擎编码规范
+globs: "**/*.rs"
+alwaysApply: false
+---
+
+# Rust 规则
+
+## 项目定位
+
+Rust 负责游戏核心引擎：状态机、存档序列化、记忆引擎、Prompt 组装、AI 输出校验、Story Package 解析。通过 Tauri command/event 暴露给前端。
+
+## 错误处理
+
+- 用 `thiserror` 定义模块级枚举错误类型，禁止 `unwrap()` / `expect()` 进入生产代码
+- Tauri command 返回 `Result<T, E>`，错误带可序列化的错误码供前端解析
+- 内部模块间传递错误用 `?` + `From` 转换，不手动 match 再 re-wrap
+
+```rust
+// BAD
+let data = file.read().unwrap();
+
+// GOOD
+let data = file.read().map_err(|e| EngineError::IoFailed { path: p, source: e })?;
+```
+
+## 类型设计
+
+- 状态用 enum 建模，状态转换通过方法而非外部 match 控制
+- 对外暴露的 struct 必须 `#[derive(Serialize, Deserialize)]`
+- 内部 ID 类型用 newtype 包装（`struct CharacterId(String)`），防止混用
+
+## 序列化
+
+- 存档/配置统一用 `serde` + JSON，生产环境加 zstd 压缩 + AES-256-GCM 加密
+- Schema 版本号显式管理，用 `#[serde(default)]` + migration 函数处理兼容
+- 不依赖字段顺序，不跳过 `Option` 字段
+
+## 并发
+
+- UI 线程不做 IO 或推理，推理任务放 `tokio` 异步任务
+- 通过 `tokio::sync::mpsc` / Tauri event channel 与前端通信
+- 共享状态用 `Arc<RwLock<T>>`，尽量缩小锁范围
+
+## 性能
+
+- Prompt 组装避免反复 `String::clone`，用 `String::with_capacity` 或 `Cow<str>`
+- Story Package 加载结果缓存，不重复解析
+- 存档序列化/反序列化路径做 benchmark（criterion）
+
+## 测试
+
+- 核心逻辑（状态机转换、记忆衰退、里程碑触发）必须有单元测试
+- Tauri command 用集成测试覆盖 IPC 通路
+- 用 `MockBackend` 隔离 AI 推理依赖

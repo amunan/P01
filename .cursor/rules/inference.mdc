@@ -1,0 +1,45 @@
+---
+description: AI 推理适配层规范
+alwaysApply: false
+---
+
+# AI 推理规则
+
+## 架构原则
+
+- 推理层通过统一 trait/interface 抽象，屏蔽底层差异
+- 后端类型：Mock → ExternalLocal (Ollama/LM Studio) → BuiltinLocal (llama.cpp) → Cloud (OpenAI 兼容)
+- 路由策略：按优先级链尝试，健康检查 + 自动降级
+
+## 接口契约
+
+- `runTurn()`：执行一轮推演，返回结构化 `TurnResult`（beats + stateChanges + suggestions）
+- `compressMemory()`：生成记忆摘要（用于记忆衰退压缩）
+- `generateSuggestions()`：独立生成建议选项（用于主动介入）
+- `healthCheck()`：检测后端可用性和延迟
+- 所有方法必须异步，支持超时和取消
+
+## AI 输出协议
+
+- AI 输出必须是可解析的 JSON，不可包含 JSON 外的文本
+- `beats` 至少 1 个，`suggestions` 在介入点时必须非空
+- 关系值变更为增量（+5/-3），不是绝对值
+- 角色 ID 必须匹配 Story Package 定义
+
+## 流式输出
+
+- 推理结果逐 token 推送：`token` → `beat_complete` → `turn_complete`
+- 原型阶段用 SSE / WebSocket，产品阶段用 Tauri event channel
+- 前端订阅事件流逐段渲染，提升感知速度
+
+## Prompt 组装
+
+- 分层拼接：System Prompt → 角色上下文 → 剧情上下文 → 记忆 → 玩家输入 → 输出格式指令
+- 每层设 token 预算上限，总量不超过模型上下文窗口
+- Prompt 模板使用 `{{variable}}` 占位符，运行时注入
+
+## 安全
+
+- API Key 不在前端暴露，由 Rust 侧管理
+- 云端请求走 HTTPS，本地推理不需要网络
+- AI 输出经过结构校验和内容过滤后才进入游戏状态
